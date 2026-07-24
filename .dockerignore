@@ -1,0 +1,10 @@
+# Python cache and environment files
+__pycache__/
+*.pyc
+.env
+
+# Docker and IDE files
+.vscode/
+.cursor/
+.idea/
+docker-compose.yml

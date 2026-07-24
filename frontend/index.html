@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>ثبت نام کاربر</title>
+    <style>
+        body { font-family: Tahoma, sans-serif; display: flex; justify-content: center; margin-top: 50px; background: #f0f2f5; }
+        .box { background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 300px; text-align: center; }
+        input { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; }
+        button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        #message { margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h2>Registration Form</h2>
+        <form id="userForm">
+            <input type="text" id="name" placeholder="please enter your name" required>
+            <input type="email" id="email" placeholder="please enter your email" required>
+            <button type="submit">submit</button>
+        </form>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        const form = document.getElementById('userForm');
+    
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the default form submission page reload
+            const token = localStorage.getItem('authToken');
+            
+            if (!token) {
+                alert('Error: You are not logged in! Please login first.');
+                return;
+            }
+            
+
+            // Collect data from input fields
+            const userData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value
+            };
+    
+            // Send a POST request to the Flask backend
+            fetch('/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                    
+                },
+                body: JSON.stringify(userData)
+            })
+            .then(response => {
+               
+                if (response.status === 401) {
+                    throw new Error('Unauthorized: Invalid or expired token.');
+                }
+                
+                return response.json();
+            })
+            .then(data => {
+                // Check if the server returned a success message
+                if (data.message) {
+                    alert(data.message); // Display success message to the user
+                    form.reset();        // Clear the form fields for the next entry
+                } else if (data.error) {
+                    alert('Error: ' + data.error); // Display backend validation error
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(error.message || 'Could not connect to the server!');
+            });
+        });
+    </script>
+
+</body>
+</html>

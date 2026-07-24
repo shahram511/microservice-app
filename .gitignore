@@ -1,0 +1,24 @@
+# Environment Variables (CRITICAL: Never commit secrets)
+.env
+
+# Python / Flask
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+
+# C# / .NET
+bin/
+obj/
+*.user
+*.suo
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp

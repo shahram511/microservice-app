@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login System</title>
+    <style>
+        body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #222; color: white; }
+        .login-box { background: #333; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); width: 300px; text-align: center; }
+        input { width: 90%; padding: 10px; margin: 10px 0; border-radius: 4px; border: none; }
+        button { width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        #message { margin-top: 15px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+    <div class="login-box">
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button onclick="loginUser()">Login</button>
+        <div id="message"></div>
+    </div>
+
+    <script>
+      async function loginUser() {
+            // اضافه کردن trim() برای پاک کردن فاصله‌های خالیِ احتمالی
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const messageBox = document.getElementById('message');
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    // حرف اول Email و Password را بزرگ نوشتیم تا دقیقاً در کلاس سی‌شارپ بنشیند
+                    body: JSON.stringify({ Email: email, Password: password })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    messageBox.style.color = "lightgreen";
+                    messageBox.innerText = "Login Successful! Saving token...";
+                    
+                    localStorage.setItem('authToken', data.token);
+                    
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 2000);
+                } else if (response.status === 401) {
+                    // فقط در صورتی که واقعاً ارور 401 (احراز هویت) بگیریم
+                    messageBox.style.color = "red";
+                    messageBox.innerText = "Invalid email or password!";
+                } else {
+                    // اگر خطای دیگری مثل پیدا نشدن مسیر (404) در Nginx رخ دهد اینجا مشخص می‌شود
+                    messageBox.style.color = "orange";
+                    messageBox.innerText = `System Error! Status Code: ${response.status}`;
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                messageBox.style.color = "red";
+                messageBox.innerText = "Server error. Try again later.";
+            }
+        }
+    </script>
+
+</body>
+</html>
