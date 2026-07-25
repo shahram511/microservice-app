@@ -67,6 +67,7 @@ services:
         reservations:
           cpus: '0.1'  
           memory: 128M
+    image: shahrambackend/user-service:latest
   #Authentication Service (C#)    
   auth-service:
     build: ./auth-service # path to the backend C# Dockerfile
