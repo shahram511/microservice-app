@@ -1,0 +1,26 @@
+name: Microservices CI pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      #step 1:
+      - name: Get the code from repository
+        uses: actions/checkout@v4
+      #step 2:
+      - name: Build and run docker containers
+        run: docker compose up -d --build
+
+      #step 3:
+      - name: Check container status
+        run: docker ps
+      #step 4:
+      - name: fetch container logs on failure
+        if: failure()
+        run: docker compose logs
+        
