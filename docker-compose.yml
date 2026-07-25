@@ -79,7 +79,7 @@ services:
     depends_on:
       mongodb-container:
         condition: service_healthy
-    image: shahrambackend/user-service:v1.0
+    image: shahrambackend/auth-service:v1.0
 
   # --- Frontend Service (Nginx) ---
   frontend:
@@ -98,7 +98,7 @@ services:
     depends_on:
       - auth-service
       - user-service
-    image: shahrambackend/user-service:v1.0
+    image: shahrambackend/frontend:v1.0
 
 
   # Monitoring Services
