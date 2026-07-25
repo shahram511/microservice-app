@@ -67,7 +67,7 @@ services:
         reservations:
           cpus: '0.1'  
           memory: 128M
-    image: shahrambackend/user-service:latest
+    image: shahrambackend/user-service:v1.0
   #Authentication Service (C#)    
   auth-service:
     build: ./auth-service # path to the backend C# Dockerfile
@@ -79,6 +79,7 @@ services:
     depends_on:
       mongodb-container:
         condition: service_healthy
+    image: shahrambackend/user-service:v1.0
 
   # --- Frontend Service (Nginx) ---
   frontend:
@@ -97,9 +98,9 @@ services:
     depends_on:
       - auth-service
       - user-service
+    image: shahrambackend/user-service:v1.0
 
 
-      # -----------------------------------
   # Monitoring Services
   # -----------------------------------
   prometheus:
